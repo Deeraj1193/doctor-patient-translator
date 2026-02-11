@@ -235,7 +235,4 @@ This project demonstrates:
 
 ## Author
 
-Deeraj N
-Full Stack Developer
-
----
+Deeraj | Full Stack Developer
