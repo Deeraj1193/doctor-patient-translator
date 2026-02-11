@@ -43,3 +43,37 @@ def translate_text(text, source_language, target_language):
 def summarize_conversation(conversation_text):
     prompt = f"Summarize this medical conversation:\n{conversation_text}"
     return call_hf(prompt)
+
+def generate_summary_text(conversation_text: str) -> str:
+    prompt = f"""
+You are a clinical assistant generating a medical summary.
+
+Summarize the following doctor-patient conversation.
+
+STRICT RULES:
+- DO NOT rewrite the entire conversation.
+- DO NOT include dialogue format.
+- DO NOT include names like Doctor or Patient.
+- DO NOT use asterisks, markdown, or symbols.
+- DO NOT say "Here is a summary" or similar.
+- Output only a clean professional medical summary.
+- Keep it concise (4-6 sentences maximum).
+
+Conversation:
+{conversation_text}
+"""
+
+    try:
+        text = call_hf(prompt)
+
+        # Extra cleanup safeguard
+        text = text.replace("*", "")
+        text = text.replace("Here is", "")
+        text = text.replace("Here's", "")
+        text = text.replace("---", "")
+
+        return text.strip()
+
+    except Exception:
+        return "Summary generation failed."
+

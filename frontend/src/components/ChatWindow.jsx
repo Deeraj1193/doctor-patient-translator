@@ -1,70 +1,34 @@
-import { useEffect, useRef, useState } from "react";
-import TopBar from "./TopBar";
-import RoleSelector from "./RoleSelector";
-import LanguageSelector from "./LanguageSelector";
-import MessageBubble from "./MessageBubble";
-import MessageInput from "./MessageInput";
-import { createSession, sendMessage, getSummary } from "../services/api";
-
-export default function ChatWindow() {
-  const [sessionId, setSessionId] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [role, setRole] = useState("doctor");
-  const [language, setLanguage] = useState("Spanish");
-  const chatRef = useRef(null);
-
-  useEffect(() => {
-    const initSession = async () => {
-      const session = await createSession();
-      setSessionId(session.id);
-    };
-    initSession();
-  }, []);
-
-  useEffect(() => {
-    chatRef.current?.scrollTo({
-      top: chatRef.current.scrollHeight,
-      behavior: "smooth"
-    });
-  }, [messages]);
-
-  const handleSend = async (text) => {
-    const payload = {
-      session_id: sessionId,
-      role: role,
-      original_text: text,
-      source_language: role === "doctor" ? "English" : language,
-      target_language: role === "doctor" ? language : "English"
-    };
-
-    const response = await sendMessage(payload);
-    setMessages((prev) => [...prev, response]);
-  };
-
-  const handleSummary = async () => {
-    const summary = await getSummary(sessionId);
-    alert(summary.summary);
-  };
-
+export default function ChatWindow({ messages }) {
   return (
-    <div className="chat-card">
-      <TopBar />
+    <div className="chat-window">
+      {messages.map((msg, index) => (
+        <div
+          key={index}
+          className={`chat-row ${
+            msg.role === "doctor" ? "right" : "left"
+          }`}
+        >
+          <div className="chat-bubble">
+            <div className="bubble-original">
+              {msg.original_text}
+            </div>
 
-      <div className="controls">
-        <RoleSelector role={role} setRole={setRole} />
-        <LanguageSelector language={language} setLanguage={setLanguage} />
-        <button className="summary-btn" onClick={handleSummary}>
-          Generate Summary
-        </button>
-      </div>
+            {msg.translated_text && (
+              <div className="bubble-translation">
+                {msg.translated_text}
+              </div>
+            )}
 
-      <div className="chat-body" ref={chatRef}>
-        {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} />
-        ))}
-      </div>
+            {msg.audio_path && (
+              <audio controls src={`http://127.0.0.1:8000/${msg.audio_path}`} />
+            )}
 
-      <MessageInput onSend={handleSend} />
+            <div className="bubble-time">
+              {new Date(msg.created_at).toLocaleTimeString()}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -18,7 +18,7 @@ class Message(Base):
     role = Column(String, nullable=False)
 
     original_text = Column(Text, nullable=False)
-    translated_text = Column(Text, nullable=False)
+    translated_text = Column(Text, nullable=True)
 
     source_language = Column(String, nullable=False)
     target_language = Column(String, nullable=False)

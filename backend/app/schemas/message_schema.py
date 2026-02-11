@@ -1,25 +1,24 @@
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
+from datetime import datetime
 
 
-class MessageCreate(BaseModel):
+class MessageBase(BaseModel):
     session_id: int
     role: str
-    original_text: str
-    source_language: str
-    target_language: str
+    original_text: Optional[str] = None
+    source_language: Optional[str] = None
+    target_language: Optional[str] = None
+    audio_path: Optional[str] = None
 
 
-class MessageResponse(BaseModel):
+class MessageCreate(MessageBase):
+    pass
+
+
+class MessageResponse(MessageBase):
     id: int
-    session_id: int
-    role: str
-    original_text: str
-    translated_text: str
-    source_language: str
-    target_language: str
-    audio_path: Optional[str]
+    translated_text: Optional[str] = None
     created_at: datetime
 
     class Config:
