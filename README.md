@@ -120,6 +120,16 @@ HuggingFace LLM API
 
 ---
 
+## Development Tools & Resources
+
+### AI Tools
+- ChatGPT
+
+### Resources used
+- HuggingFace Documentation : https://huggingface.co/docs
+
+---
+
 ## Project Structure
 
 ```
@@ -228,6 +238,6 @@ This project demonstrates:
 Deeraj N
 Full Stack Developer
 
-````
+```
 
 ---
