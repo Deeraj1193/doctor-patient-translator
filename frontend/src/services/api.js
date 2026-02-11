@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://doctor-patient-translator-ulpe.onrender.com";
 
 export const createSession = async () => {
   const res = await axios.post(`${API_BASE}/sessions/`);
