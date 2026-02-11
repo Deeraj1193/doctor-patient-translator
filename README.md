@@ -1,10 +1,10 @@
-# 🏥 Doctor–Patient AI Translation Web Application
+# Doctor–Patient AI Translation Web Application
 
 A full stack healthcare communication platform that enables real time multilingual interaction between doctors and patients using AI translation, voice notes, search option and chat summarization.
 
 ---
 
-## 🚀 Project Overview
+## Project Overview
 
 This application acts as a real time translation bridge between a doctor and a patient. It supports:
 
@@ -18,7 +18,7 @@ The system is designed to simulate a clinical consultation scenario where langua
 
 ---
 
-## 🎯 Core Features Implemented
+## Core Features Implemented
 
 ### Real-Time Doctor–Patient Translation
 - Two roles: Doctor and Patient
