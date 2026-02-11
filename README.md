@@ -239,5 +239,3 @@ Deeraj N
 Full Stack Developer
 
 ```
-
----
