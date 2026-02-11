@@ -1,52 +1,45 @@
 import os
-import google.generativeai as genai
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+HF_API_TOKEN = os.getenv("HF_API_TOKEN")
 
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+print("TOKEN: ",HF_API_TOKEN)
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
-else:
-    model = None
+BASE_URL = "https://router.huggingface.co/v1/chat/completions"
 
-
-def translate_text(text: str, source_language: str, target_language: str) -> str:
-    if not model:
-        return text  # fallback if no key configured
-
-    prompt = f"""
-    Translate the following text from {source_language} to {target_language}.
-    Only return the translated text.
-
-    Text:
-    {text}
-    """
-
-    response = model.generate_content(prompt)
-    return response.text.strip()
+HEADERS = {
+    "Authorization": f"Bearer {HF_API_TOKEN}",
+    "Content-Type": "application/json"
+}
 
 
-def summarize_conversation(conversation_text: str) -> str:
-    if not model:
-        return "Summary service not configured."
+def call_hf(prompt):
+    payload = {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 200
+    }
 
-    prompt = f"""
-    You are a medical assistant AI.
-    Summarize the following doctor-patient conversation.
+    response = requests.post(BASE_URL, headers=HEADERS, json=payload)
 
-    Highlight:
-    - Symptoms
-    - Diagnoses
-    - Medications
-    - Follow-up instructions
+    if response.status_code != 200:
+        return f"HF API error: {response.text}"
 
-    Conversation:
-    {conversation_text}
-    """
+    result = response.json()
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    return result["choices"][0]["message"]["content"].strip()
+
+
+def translate_text(text, source_language, target_language):
+    prompt = f"Translate from {source_language} to {target_language}: {text}"
+    return call_hf(prompt)
+
+
+def summarize_conversation(conversation_text):
+    prompt = f"Summarize this medical conversation:\n{conversation_text}"
+    return call_hf(prompt)

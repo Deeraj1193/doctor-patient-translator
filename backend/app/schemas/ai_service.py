@@ -8,13 +8,14 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-
-model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+else:
+    model = None
 
 
 def translate_text(text: str, source_language: str, target_language: str) -> str:
-    if not GEMINI_API_KEY:
-        return text  # fallback if no key
+    if not model:
+        return text
 
     prompt = f"""
     Translate the following text from {source_language} to {target_language}.
@@ -29,7 +30,7 @@ def translate_text(text: str, source_language: str, target_language: str) -> str
 
 
 def summarize_conversation(conversation_text: str) -> str:
-    if not GEMINI_API_KEY:
+    if not model:
         return "Summary service not configured."
 
     prompt = f"""
